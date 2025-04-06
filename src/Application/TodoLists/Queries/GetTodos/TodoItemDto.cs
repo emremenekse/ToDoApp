@@ -18,6 +18,7 @@ public class TodoItemDto : IMapFrom<TodoItem>
     public int Priority { get; set; }
 
     public string? Note { get; set; }
+    public string? BackroundColour { get; set; }
     public IList<TagDto>? Tags { get; set; }
 
     public void Mapping(Profile profile)
