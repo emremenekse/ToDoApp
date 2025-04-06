@@ -37,7 +37,6 @@
   display: block;
 }
 
-// Etiket stilleri
 .tag {
   display: inline-flex;
   align-items: center;
@@ -47,13 +46,13 @@
   color: white;
   background-color: #6c757d;
   border-radius: 0.25rem;
-  cursor: pointer; // İmleci el işaretine dönüştür
-  transition: all 0.2s ease; // Geçiş efekti ekle
+  cursor: pointer; 
+  transition: all 0.2s ease;
   
   &:hover {
-    transform: scale(1.05); // Hafifçe büyüt
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); // Gölge ekle
-    opacity: 0.9; // Hafif opaklık ekle
+    transform: scale(1.05); 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 0.9;
   }
   
   .btn-close {
@@ -62,7 +61,6 @@
   }
 }
 
-// Seçili tag stilleri
 .tag-selected {
   font-weight: bold;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
