@@ -15,6 +15,7 @@ public record UpdateTodoItemDetailCommand : IRequest
     public PriorityLevel Priority { get; init; }
 
     public string? Note { get; init; }
+    public string? BackroundColour { get; init; }
 }
 
 public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItemDetailCommand>
@@ -34,6 +35,11 @@ public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItem
         if (entity == null)
         {
             throw new NotFoundException(nameof(TodoItem), request.Id);
+        }
+
+        if (!string.IsNullOrEmpty(request.BackroundColour))
+        {
+            entity.BackroundColour = request.BackroundColour;
         }
 
         entity.ListId = request.ListId;

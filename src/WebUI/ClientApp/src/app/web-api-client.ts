@@ -721,6 +721,7 @@ export class TodoItemBriefDto implements ITodoItemBriefDto {
     id?: number;
     listId?: number;
     title?: string | undefined;
+    backroundColour?: string | undefined;
     done?: boolean;
 
     constructor(data?: ITodoItemBriefDto) {
@@ -737,6 +738,7 @@ export class TodoItemBriefDto implements ITodoItemBriefDto {
             this.id = _data["id"];
             this.listId = _data["listId"];
             this.title = _data["title"];
+            this.backroundColour = _data["backroundColour"];
             this.done = _data["done"];
         }
     }
@@ -753,6 +755,7 @@ export class TodoItemBriefDto implements ITodoItemBriefDto {
         data["id"] = this.id;
         data["listId"] = this.listId;
         data["title"] = this.title;
+        data["backroundColour"] = this.backroundColour;
         data["done"] = this.done;
         return data;
     }
@@ -762,6 +765,7 @@ export interface ITodoItemBriefDto {
     id?: number;
     listId?: number;
     title?: string | undefined;
+    backroundColour?: string | undefined;
     done?: boolean;
 }
 
@@ -854,6 +858,7 @@ export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand
     listId?: number;
     priority?: PriorityLevel;
     note?: string | undefined;
+    backroundColour?: string | undefined;
 
     constructor(data?: IUpdateTodoItemDetailCommand) {
         if (data) {
@@ -870,6 +875,7 @@ export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand
             this.listId = _data["listId"];
             this.priority = _data["priority"];
             this.note = _data["note"];
+            this.backroundColour = _data["backroundColour"];
         }
     }
 
@@ -886,6 +892,7 @@ export class UpdateTodoItemDetailCommand implements IUpdateTodoItemDetailCommand
         data["listId"] = this.listId;
         data["priority"] = this.priority;
         data["note"] = this.note;
+        data["backroundColour"] = this.backroundColour;
         return data;
     }
 }
@@ -895,6 +902,7 @@ export interface IUpdateTodoItemDetailCommand {
     listId?: number;
     priority?: PriorityLevel;
     note?: string | undefined;
+    backroundColour?: string | undefined;
 }
 
 export enum PriorityLevel {
