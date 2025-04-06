@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Todo_App.Application.Common.Mappings;
+using Todo_App.Application.Tags.Queries.GetTags;
 using Todo_App.Domain.Entities;
 
 namespace Todo_App.Application.TodoLists.Queries.GetTodos;
@@ -18,6 +19,7 @@ public class TodoItemDto : IMapFrom<TodoItem>
 
     public string? Note { get; set; }
     public string? BackroundColour { get; set; }
+    public IList<TagDto>? Tags { get; set; }
 
     public void Mapping(Profile profile)
     {

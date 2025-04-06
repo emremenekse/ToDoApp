@@ -694,6 +694,13 @@
             "type": "string",
             "nullable": true
           },
+          "tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TagDto"
+            }
+          },
           "done": {
             "type": "boolean"
           }
@@ -867,6 +874,13 @@
           "note": {
             "type": "string",
             "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TagDto"
+            }
           },
           "backroundColour": {
             "type": "string",

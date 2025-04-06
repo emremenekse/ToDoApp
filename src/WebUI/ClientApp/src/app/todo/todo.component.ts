@@ -2,10 +2,10 @@ import { Component, TemplateRef, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import {
-  TodoListsClient, TodoItemsClient,
-  TodoListDto, TodoItemDto, PriorityLevelDto,
-  CreateTodoListCommand, UpdateTodoListCommand,
-  CreateTodoItemCommand, UpdateTodoItemDetailCommand
+  TodoItemsClient, TodoListsClient, TodoListDto, TodoItemDto, TagDto, TagsVm,
+  PriorityLevelDto, CreateTodoListCommand, UpdateTodoListCommand,
+  CreateTodoItemCommand, UpdateTodoItemDetailCommand, TodosVm,
+  TagsClient, CreateTagCommand
 } from '../web-api-client';
 
 @Component({
@@ -28,10 +28,24 @@ export class TodoComponent implements OnInit {
   listOptionsModalRef: BsModalRef;
   deleteListModalRef: BsModalRef;
   itemDetailsModalRef: BsModalRef;
+  tagModalRef: BsModalRef;
+  
+  tags: TagDto[] = [];
+  filteredTags: TagDto[] = [];
+  selectedTags: TagDto[] = [];
+  newTagEditor: any = {};
+  searchText: string = '';
+  
+  get popularTags(): TagDto[] {
+    return [...this.tags].sort((a, b) => b.usageCount - a.usageCount).slice(0, 3);
+  }
+  
   itemDetailsFormGroup = this.fb.group({
     id: [null],
     listId: [null],
     priority: [''],
+    note: [''],
+    tags: [[]]
     note: [''],
     backroundColour: ['']
   });
@@ -40,6 +54,7 @@ export class TodoComponent implements OnInit {
   constructor(
     private listsClient: TodoListsClient,
     private itemsClient: TodoItemsClient,
+    private tagsClient: TagsClient,
     private modalService: BsModalService,
     private fb: FormBuilder
   ) { }
@@ -55,7 +70,176 @@ export class TodoComponent implements OnInit {
       },
       error => console.error(error)
     );
+    
+    this.loadTags();
   }
+  
+  loadTags(): void {
+    this.tagsClient.getTags().subscribe(
+      (result: TagsVm) => {
+        this.tags = result.tags;
+        this.filteredTags = [...this.tags];
+      },
+      error => console.error(error)
+    );
+  }
+  
+  createTag(tagName: string, tagColor: string): void {
+    const command = new CreateTagCommand({
+      name: tagName,
+      color: tagColor
+    });
+    
+    this.tagsClient.create(command).subscribe(
+      () => {
+        this.loadTags();
+        this.newTagEditor = {};
+      },
+      error => console.error(error)
+    );
+  }
+  
+  addTagToTodoItem(todoItemId: number, tagId: number): void {
+    this.tagsClient.addTagToTodoItem(todoItemId, tagId).subscribe(
+      () => {
+        this.loadTodoItem(todoItemId);
+      },
+      error => console.error(error)
+    );
+  }
+  
+  removeTagFromTodoItem(todoItemId: number, tagId: number): void {
+    this.tagsClient.removeTagFromTodoItem(todoItemId, tagId).subscribe(
+      () => {
+        this.loadTodoItem(todoItemId);
+      },
+      error => console.error(error)
+    );
+  }
+  
+  loadTodoItem(todoItemId: number): void {
+    const list = this.lists.find(l => l.items.some(i => i.id === todoItemId));
+    if (list) {
+      const itemIndex = list.items.findIndex(i => i.id === todoItemId);
+      if (itemIndex >= 0) {
+        this.itemsClient.getTodoItemsWithPagination(1, 10, todoItemId).subscribe(
+          result => {
+            if (result.items.length > 0) {
+              list.items[itemIndex] = result.items[0];
+              if (this.selectedItem && this.selectedItem.id === todoItemId) {
+                this.selectedItem = list.items[itemIndex];
+              }
+            }
+          },
+          error => console.error(error)
+        );
+      }
+    }
+  }
+  
+  showTagManagementModal(template: TemplateRef<any>): void {
+    this.tagModalRef = this.modalService.show(template);
+  }
+  
+  deleteTag(tagId: number): void {
+    this.tagsClient.delete(tagId).subscribe(
+      () => {
+        this.loadTags();
+      },
+      error => console.error(error)
+    );
+  }
+  
+  filterByTag(tag: TagDto): void {
+    const tagIndex = this.selectedTags.findIndex(t => t.id === tag.id);
+    if (tagIndex >= 0) {
+      this.selectedTags.splice(tagIndex, 1);
+    } else {
+      this.selectedTags.push(tag);
+    }
+    
+    this.applyFilters();
+  }
+  
+  isTagSelected(tagId: number): boolean {
+    return this.selectedTags.some(t => t.id === tagId);
+  }
+  
+  searchItems(searchText: string): void {
+    this.searchText = searchText;
+    this.applyFilters();
+  }
+  
+  clearFilters(): void {
+    this.selectedTags = [];
+    this.searchText = '';
+    this.applyFilters();
+  }
+  
+  applyFilters(): void {
+    if (!this.selectedList) {
+      return;
+    }
+
+    if (this.selectedTags.length === 0 && !this.searchText) {
+      this.listsClient.get().subscribe(
+        result => {
+          this.lists = result.lists;
+          const originalList = this.lists.find(l => l.id === this.selectedList?.id);
+          if (originalList) {
+            this.selectedList = originalList;
+          } else if (this.lists.length) {
+            this.selectedList = this.lists[0];
+          }
+        },
+        error => console.error(error)
+      );
+      return;
+    }
+
+    this.listsClient.get().subscribe(
+      result => {
+        this.lists = result.lists;
+        
+        const originalList = this.lists.find(l => l.id === this.selectedList?.id);
+        if (!originalList) {
+          return;
+        }
+        
+        const filteredList = JSON.parse(JSON.stringify(originalList)) as TodoListDto;
+        
+        let filteredItems = [...filteredList.items];
+        
+        if (this.selectedTags.length > 0) {
+          const tagIds = this.selectedTags.map(t => t.id);
+          
+          filteredItems = filteredItems.filter(item => {
+            if (!item.tags || item.tags.length === 0) {
+              return false;
+            }
+            
+            return tagIds.some(tagId => 
+              item.tags.some(itemTag => itemTag.id === tagId)
+            );
+          });
+        }
+        
+        if (this.searchText && this.searchText.trim() !== '') {
+          const searchLower = this.searchText.toLowerCase().trim();
+          
+          filteredItems = filteredItems.filter(item => 
+            item.title.toLowerCase().includes(searchLower)
+          );
+        }
+        
+        filteredList.items = filteredItems;
+        
+        this.selectedList = filteredList;
+      },
+      error => console.error(error)
+    );
+  }
+  
 
   // Lists
   remainingItems(list: TodoListDto): number {
