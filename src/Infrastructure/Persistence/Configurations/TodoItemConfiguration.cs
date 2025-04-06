@@ -16,5 +16,9 @@ public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
             .HasMaxLength(2);
         builder.Property(t => t.BackroundColour)
             .HasMaxLength(50);
+        builder
+            .HasMany(t => t.Tags)
+            .WithMany(t => t.TodoItems)
+            .UsingEntity(j => j.ToTable("TodoItemTags"));
     }
 }
