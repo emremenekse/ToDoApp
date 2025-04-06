@@ -599,6 +599,10 @@
           "note": {
             "type": "string",
             "nullable": true
+          },
+          "backroundColour": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
