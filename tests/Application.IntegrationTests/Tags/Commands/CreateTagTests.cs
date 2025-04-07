@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Todo_App.Application.Tags.Commands.CreateTag;
 using Todo_App.Domain.Entities;
+using Todo_App.Application.Common.Exceptions;
 
 namespace Todo_App.Application.IntegrationTests.Tags.Commands;
 using static Testing;
