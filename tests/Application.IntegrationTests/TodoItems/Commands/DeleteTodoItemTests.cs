@@ -39,6 +39,48 @@ public class DeleteTodoItemTests : BaseTestFixture
 
         var item = await FindAsync<TodoItem>(itemId);
 
-        item.Should().BeNull();
+        item.Should().NotBeNull();
+        item!.IsRemoved.Should().BeTrue();
+    }
+    [Test]
+    public async Task ShouldDeleteTodoItemV2()
+    {
+        var listId = await SendAsync(new CreateTodoListCommand
+        {
+            Title = "New List"
+        });
+
+        var itemId = await SendAsync(new CreateTodoItemCommand
+        {
+            ListId = listId,
+            Title = "New Item"
+        });
+
+        await SendAsync(new DeleteTodoItemCommand(itemId));
+
+        var item = await FindAsync<TodoItem>(itemId);
+        item.Should().NotBeNull();
+        item!.IsRemoved.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task ShouldSoftDeleteTodoItem()
+    {
+        var listId = await SendAsync(new CreateTodoListCommand
+        {
+            Title = "Soft Delete Test List"
+        });
+
+        var itemId = await SendAsync(new CreateTodoItemCommand
+        {
+            ListId = listId,
+            Title = "Soft Delete Test Item"
+        });
+
+        await SendAsync(new DeleteTodoItemCommand(itemId));
+
+        var itemNormal = await FindAsync<TodoItem>(itemId);
+        itemNormal.Should().NotBeNull();
+        itemNormal!.IsRemoved.Should().BeTrue();
     }
 }
