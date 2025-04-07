@@ -875,16 +875,16 @@
             "type": "string",
             "nullable": true
           },
+          "backroundColour": {
+            "type": "string",
+            "nullable": true
+          },
           "tags": {
             "type": "array",
             "nullable": true,
             "items": {
               "$ref": "#/components/schemas/TagDto"
             }
-          },
-          "backroundColour": {
-            "type": "string",
-            "nullable": true
           }
         }
       },

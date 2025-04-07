@@ -1551,8 +1551,8 @@ export class TodoItemDto implements ITodoItemDto {
     done?: boolean;
     priority?: number;
     note?: string | undefined;
-    tags?: TagDto[] | undefined;
     backroundColour?: string | undefined;
+    tags?: TagDto[] | undefined;
 
     constructor(data?: ITodoItemDto) {
         if (data) {
@@ -1571,12 +1571,12 @@ export class TodoItemDto implements ITodoItemDto {
             this.done = _data["done"];
             this.priority = _data["priority"];
             this.note = _data["note"];
+            this.backroundColour = _data["backroundColour"];
             if (Array.isArray(_data["tags"])) {
                 this.tags = [] as any;
                 for (let item of _data["tags"])
                     this.tags!.push(TagDto.fromJS(item));
             }
-            this.backroundColour = _data["backroundColour"];
         }
     }
 
@@ -1595,12 +1595,12 @@ export class TodoItemDto implements ITodoItemDto {
         data["done"] = this.done;
         data["priority"] = this.priority;
         data["note"] = this.note;
+        data["backroundColour"] = this.backroundColour;
         if (Array.isArray(this.tags)) {
             data["tags"] = [];
             for (let item of this.tags)
                 data["tags"].push(item.toJSON());
         }
-        data["backroundColour"] = this.backroundColour;
         return data;
     }
 }
@@ -1612,8 +1612,8 @@ export interface ITodoItemDto {
     done?: boolean;
     priority?: number;
     note?: string | undefined;
-    tags?: TagDto[] | undefined;
     backroundColour?: string | undefined;
+    tags?: TagDto[] | undefined;
 }
 
 export class CreateTodoListCommand implements ICreateTodoListCommand {

@@ -45,8 +45,7 @@ export class TodoComponent implements OnInit {
     listId: [null],
     priority: [''],
     note: [''],
-    tags: [[]]
-    note: [''],
+    tags: [[]],
     backroundColour: ['']
   });
 
@@ -103,6 +102,20 @@ export class TodoComponent implements OnInit {
     this.tagsClient.addTagToTodoItem(todoItemId, tagId).subscribe(
       () => {
         this.loadTodoItem(todoItemId);
+        this.listsClient.get().subscribe(
+          result => {
+            this.lists = result.lists;
+            if (this.selectedTags.length > 0 || this.searchText) {
+              this.applyFilters();
+            } else {
+              const updatedList = this.lists.find(l => l.id === this.selectedList?.id);
+              if (updatedList) {
+                this.selectedList = updatedList;
+              }
+            }
+          },
+          error => console.error(error)
+        );
       },
       error => console.error(error)
     );
@@ -112,6 +125,20 @@ export class TodoComponent implements OnInit {
     this.tagsClient.removeTagFromTodoItem(todoItemId, tagId).subscribe(
       () => {
         this.loadTodoItem(todoItemId);
+        this.listsClient.get().subscribe(
+          result => {
+            this.lists = result.lists;
+            if (this.selectedTags.length > 0 || this.searchText) {
+              this.applyFilters();
+            } else {
+              const updatedList = this.lists.find(l => l.id === this.selectedList?.id);
+              if (updatedList) {
+                this.selectedList = updatedList;
+              }
+            }
+          },
+          error => console.error(error)
+        );
       },
       error => console.error(error)
     );

@@ -124,16 +124,21 @@
               <input id="{{ 'itemTitle' + i }}" *ngIf="item == selectedItem" type="text"
                 class="form-control item-input-control" [(ngModel)]="item.title" (keyup.enter)="updateItem(item, true)"
                 (blur)="updateItem(item)" autofocus="autofocus" />
-              <div class="todo-item-title" *ngIf="item != selectedItem" [ngClass]="{ 'done-todo': item.done }"
+                <div class="todo-item-title" *ngIf="item != selectedItem" [ngClass]="{ 'done-todo': item.done }"
                 (click)="editItem(item, 'itemTitle' + i)" class="form-control item-input-control">
-                <span>{{ item.title }}</span>
-                <div class="d-flex flex-wrap mt-1" *ngIf="item.tags && item.tags.length > 0">
-                  <div *ngFor="let tag of item.tags" class="tag-small me-1 mb-1" [ngStyle]="{'background-color': tag.color || '#6c757d'}">
-                    {{ tag.name }}
-                  </div>
+                <div class="d-flex align-items-center">
+                  <span>{{ item.title }}</span>
                 </div>
               </div>
             </div>
+            <div class="d-flex align-items-center">
+              <div class="d-flex flex-wrap ms-2" *ngIf="item.tags && item.tags.length > 0">
+                <div *ngFor="let tag of item.tags" class="tag-small me-1" [ngStyle]="{'background-color': tag.color || '#6c757d'}">
+                  {{ tag.name }}
+                </div>
+              </div>
+            </div>
+            
             <div class="todo-item-commands">
               <button *ngIf="item.id != 0" (click)="showItemDetailsModal(itemDetailsModalTemplate, item)"
                 class="btn btn-default btn-xs" role="button">
