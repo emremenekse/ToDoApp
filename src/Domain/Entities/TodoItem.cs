@@ -8,6 +8,7 @@ public class TodoItem : BaseAuditableEntity
 
     public string? Note { get; set; }
     public string? BackroundColour { get; set; }
+    public bool IsRemoved { get; set; }
 
     public PriorityLevel Priority { get; set; }
 
