@@ -29,6 +29,7 @@ public class GetTodoItemsWithPaginationQueryHandler : IRequestHandler<GetTodoIte
     {
         return await _context.TodoItems
             .Where(x => x.ListId == request.ListId)
+            .Where(x => !x.IsRemoved)
             .OrderBy(x => x.Title)
             .ProjectTo<TodoItemBriefDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
