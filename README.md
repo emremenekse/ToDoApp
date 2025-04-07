@@ -21,3 +21,5 @@ Our test task is based on the Clean Architecture Solution Template that uses .NE
 **Include as much unit test coverage as possible for the code you add.**
 
 We are aware that our tasks have open-ended questions. But we wish to see your perspective and ideas. Feel free to let your imagination run wild and create anything you want with this task.
+
+![image](https://github.com/user-attachments/assets/56e80a36-db19-4a30-8b6c-ed76d915bbda)
